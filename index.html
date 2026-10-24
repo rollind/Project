@@ -1,25 +1,331 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Birthday Card</title>
-     <link  rel="stylesheet" href="style.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#fff8ed">
+	<meta name="description" content="A little birthday magic for Bridgit.">
+	<title>Happy Birthday, Bridgit!</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			color-scheme: light;
+			--ink: #263b36;
+			--cream: #fff8ed;
+			--coral: #ef7259;
+			--gold: #f3c454;
+			--teal: #408c7e;
+			--pink: #e8a0a0;
+		}
+
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			min-height: 100vh;
+			overflow-x: hidden;
+			background: var(--cream);
+			color: var(--ink);
+			font-family: "DM Sans", sans-serif;
+		}
+
+		.page {
+			position: relative;
+			display: grid;
+			min-height: 100svh;
+			grid-template-columns: minmax(0, 1fr) minmax(300px, 0.83fr);
+			align-items: center;
+			gap: clamp(2rem, 6vw, 6rem);
+			max-width: 1280px;
+			margin: auto;
+			padding: clamp(2rem, 6vw, 5.5rem);
+			isolation: isolate;
+		}
+
+		.page::before,
+		.page::after {
+			position: fixed;
+			z-index: -1;
+			content: "";
+			pointer-events: none;
+		}
+
+		.page::before {
+			top: -15rem;
+			right: -13rem;
+			width: 38rem;
+			height: 38rem;
+			border: 1px solid rgba(64, 140, 126, .16);
+			border-radius: 50%;
+			box-shadow: 0 0 0 2.5rem rgba(64, 140, 126, .035), 0 0 0 6rem rgba(64, 140, 126, .025);
+		}
+
+		.page::after {
+			bottom: -17rem;
+			left: -11rem;
+			width: 34rem;
+			height: 34rem;
+			border-radius: 50%;
+			background: radial-gradient(circle, rgba(243, 196, 84, .22), rgba(243, 196, 84, 0) 68%);
+		}
+
+		.copy {
+			position: relative;
+			z-index: 1;
+			animation: arrive .8s both;
+		}
+
+		.eyebrow {
+			display: flex;
+			align-items: center;
+			gap: .65rem;
+			margin: 0 0 1.2rem;
+			color: var(--teal);
+			font-size: .76rem;
+			font-weight: 700;
+			letter-spacing: .14em;
+			text-transform: uppercase;
+		}
+
+		.eyebrow::before { width: 1.8rem; height: 2px; background: currentColor; content: ""; }
+
+		h1 {
+			max-width: 700px;
+			margin: 0;
+			font-family: "Playfair Display", Georgia, serif;
+			font-size: clamp(3.8rem, 8.8vw, 7.6rem);
+			font-weight: 700;
+			line-height: .96;
+		}
+
+		h1 span { display: block; color: var(--coral); }
+
+		.message {
+			max-width: 29rem;
+			margin: 1.7rem 0 0;
+			color: #52625b;
+			font-size: clamp(1.03rem, 1.7vw, 1.2rem);
+			line-height: 1.8;
+		}
+
+		.wish {
+			max-width: 27rem;
+			min-height: 3.6em;
+			margin: 1.2rem 0 0;
+			color: #8a594e;
+			font-family: "Playfair Display", Georgia, serif;
+			font-size: 1.15rem;
+			line-height: 1.55;
+			opacity: 0;
+			transform: translateY(8px);
+			transition: opacity .5s ease, transform .5s ease;
+		}
+
+		.wish.visible { opacity: 1; transform: translateY(0); }
+
+		.actions { display: flex; align-items: center; gap: 1rem; margin-top: 1.5rem; }
+
+		button {
+			min-height: 3.2rem;
+			padding: .85rem 1.25rem;
+			border: 0;
+			border-radius: 4px;
+			background: var(--ink);
+			color: white;
+			font: 700 .92rem "DM Sans", sans-serif;
+			cursor: pointer;
+			transition: background .2s ease, transform .2s ease;
+		}
+
+		button:hover { transform: translateY(-2px); background: var(--teal); }
+		button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+		.signature { margin: 1.6rem 0 0; color: #738079; font-size: .9rem; }
+		.signature strong { color: var(--ink); font-weight: 700; }
+
+		.visual {
+			position: relative;
+			min-height: min(68vh, 600px);
+			overflow: hidden;
+			border-radius: 48% 48% 5px 5px;
+			background: #f2d4b5;
+			animation: arrive .9s .15s both;
+		}
+
+		.visual img {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			inset: 0;
+			object-fit: cover;
+			object-position: center;
+		}
+
+		.visual::after {
+			position: absolute;
+			inset: 45% 0 0;
+			background: linear-gradient(transparent, rgba(38, 59, 54, .42));
+			content: "";
+		}
+
+		.photo-caption {
+			position: absolute;
+			z-index: 1;
+			right: 1.5rem;
+			bottom: 1.5rem;
+			left: 1.5rem;
+			color: white;
+			font-family: "Playfair Display", Georgia, serif;
+			font-size: 1.35rem;
+			text-align: center;
+		}
+
+		.qr-panel {
+			position: absolute;
+			right: clamp(1rem, 5vw, 4rem);
+			bottom: clamp(1rem, 5vw, 4rem);
+			display: grid;
+			width: 156px;
+			justify-items: center;
+			gap: .55rem;
+			padding: .8rem;
+			border: 1px solid rgba(38, 59, 54, .12);
+			border-radius: 5px;
+			background: rgba(255, 248, 237, .95);
+			box-shadow: 0 12px 35px rgba(38, 59, 54, .1);
+			text-align: center;
+		}
+
+		#qrcode { display: grid; width: 116px; height: 116px; place-items: center; background: white; }
+		#qrcode img, #qrcode canvas { display: block; width: 116px; height: 116px; }
+		.qr-label { margin: 0; font-size: .72rem; font-weight: 700; }
+		.qr-note { max-width: 125px; margin: 0; color: #65716c; font-size: .66rem; line-height: 1.4; }
+		.qr-panel button { min-height: 2rem; padding: .45rem .65rem; font-size: .7rem; }
+		.qr-panel[hidden] { display: none; }
+
+		.confetti {
+			position: fixed;
+			z-index: 5;
+			top: -1rem;
+			width: 9px;
+			height: 14px;
+			pointer-events: none;
+			animation: fall var(--duration) linear forwards;
+		}
+
+		@keyframes arrive { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+		@keyframes fall { to { transform: translate3d(var(--drift), 110vh, 0) rotate(760deg); opacity: .75; } }
+
+		@media (max-width: 760px) {
+			.page { min-height: 100svh; grid-template-columns: 1fr; gap: 2rem; padding: 3.2rem 1.5rem 12rem; }
+			h1 { font-size: clamp(3.8rem, 17vw, 6rem); }
+			.visual { min-height: 48vh; max-height: 500px; }
+			.qr-panel { right: 1rem; bottom: 1rem; width: 138px; padding: .6rem; }
+			#qrcode, #qrcode img, #qrcode canvas { width: 100px; height: 100px; }
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			*, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+		}
+	</style>
 </head>
 <body>
-    <div class="Happy birthday">
-        <h1 class="h1">Happy Birthday Babygirl</h1>
-        <p>Wishing you a fantastic birthday!</p>
-        <a href="https://www.youtube.com/watch?v=3GwjfUFyY6M" target="_blank">Click here for a special birthday song!</a>
-        <div class="image-container">
-            <img src="birhday girl.jpg.jpeg" alt="Birthday GIF">
-        <br>
-        <img src="birthday2girl.jpg.jpeg" alt="Birthday GIF">
-        </div>
-        <p>May your day be filled with love, laughter, and joy. Enjoy your special day to the fullest!</p>
-        <br>
-        <p>You are the most amazing person I know!</p>
+	<main class="page">
+		<section class="copy" aria-labelledby="birthday-title">
+			<p class="eyebrow">A day made for celebrating</p>
+			<h1 id="birthday-title">Happy Birthday,<span>Bridgit!</span></h1>
+			<p class="message">Today is all about you: the warmth you bring, the laughter you share, and all the lovely little moments still waiting to happen.</p>
+			<p class="wish" id="wish" aria-live="polite">May this next trip around the sun bring you big joy, soft mornings, good surprises, and everything your heart has been hoping for.</p>
+			<div class="actions">
+				<button id="wish-button" type="button">Make a little magic</button>
+			</div>
+			<p class="signature">With lots of love, <strong>someone who thinks the world of you</strong></p>
+		</section>
 
-    </div>
+		<section class="visual" aria-label="Birthday cake with candles">
+			<img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=1200&q=85" alt="A beautifully decorated birthday cake with lit candles">
+			<p class="photo-caption">Make a wish, Bridgit.</p>
+		</section>
+
+		<aside class="qr-panel" id="qr-panel" aria-label="Share this birthday page" hidden>
+			<p class="qr-label">A little birthday link</p>
+			<div id="qrcode" aria-label="QR code linking to this birthday page"></div>
+			<p class="qr-note" id="qr-note">Scan to open Bridgit's birthday wishes.</p>
+			<button id="download-qr" type="button" hidden>Download QR</button>
+		</aside>
+	</main>
+
+	<script>
+		const wishes = [
+			"May this next trip around the sun bring you big joy, soft mornings, good surprises, and everything your heart has been hoping for.",
+			"You make ordinary days feel brighter just by being you. Here's to a year that gives all that goodness right back.",
+			"May your cake be generous, your candles easy to blow out, and your year ahead wonderfully, unmistakably yours."
+		];
+		const wish = document.querySelector("#wish");
+		let wishIndex = 0;
+
+		function celebrate() {
+			wishIndex = (wishIndex + 1) % wishes.length;
+			wish.classList.remove("visible");
+			window.setTimeout(() => {
+				wish.textContent = wishes[wishIndex];
+				wish.classList.add("visible");
+			}, 140);
+
+			const colors = ["#ef7259", "#f3c454", "#408c7e", "#e8a0a0", "#7898c5"];
+			for (let index = 0; index < 70; index += 1) {
+				const piece = document.createElement("span");
+				piece.className = "confetti";
+				piece.style.left = `${Math.random() * 100}vw`;
+				piece.style.backgroundColor = colors[index % colors.length];
+				piece.style.setProperty("--drift", `${Math.random() * 180 - 90}px`);
+				piece.style.setProperty("--duration", `${2.4 + Math.random() * 2.4}s`);
+				piece.style.animationDelay = `${Math.random() * .45}s`;
+				document.body.append(piece);
+				window.setTimeout(() => piece.remove(), 5200);
+			}
+		}
+
+		document.querySelector("#wish-button").addEventListener("click", celebrate);
+
+		const qrPanel = document.querySelector("#qr-panel");
+		const qrBox = document.querySelector("#qrcode");
+		const qrNote = document.querySelector("#qr-note");
+		const downloadButton = document.querySelector("#download-qr");
+
+		if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+			qrPanel.hidden = false;
+			const qrScript = document.createElement("script");
+			qrScript.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+			qrScript.onload = () => {
+				new QRCode(qrBox, {
+					text: window.location.href,
+					width: 232,
+					height: 232,
+					colorDark: "#263b36",
+					colorLight: "#ffffff",
+					correctLevel: QRCode.CorrectLevel.H
+				});
+				downloadButton.hidden = false;
+				downloadButton.addEventListener("click", () => {
+					const canvas = qrBox.querySelector("canvas");
+					const image = qrBox.querySelector("img");
+					const link = document.createElement("a");
+					link.download = "bridgit-birthday-qr.png";
+					link.href = canvas ? canvas.toDataURL("image/png") : image.src;
+					link.click();
+				});
+			};
+			qrScript.onerror = () => {
+				qrNote.textContent = "QR unavailable right now. Try reloading while online.";
+			};
+			document.head.append(qrScript);
+		} else {
+			qrPanel.hidden = false;
+			qrNote.textContent = "The shareable QR appears after this page is hosted online.";
+		}
+	</script>
 </body>
 </html>
